@@ -49,8 +49,10 @@ class AddPost implements ShouldQueue
     public function handle()
     {
         $post = new Post;
-        $post->title = $this->title;
-        $post->body = $this->text;
+        $post->fill([
+            'title' => $this->title,
+            'body' => $this->text
+        ]);
         $post->user()->associate($this->user);
         $post->save();
 

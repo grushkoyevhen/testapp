@@ -20,8 +20,11 @@ Route::middleware('auth')->group(function() {
     Route::get('addpost', [PostController::class, 'showAdd'])->name('post.add');
     Route::post('addpost', [PostController::class, 'add'])->name('post.add_failed');
     Route::get('post/{id}', [PostController::class, 'showPost'])->name('post.show')->whereNumber('id');
-    Route::get('posts', [PostController::class, 'showList'])->name('post.list');
-    Route::get('posts/page/{id}', [PostController::class, 'showList'])->name('post.page')->whereNumber('id');
+
+    Route::prefix('posts')->name('post.list')->group(function() {
+        Route::get('/', [PostController::class, 'showList']);
+        Route::get('page/{id}', [PostController::class, 'showList'])->name('.page')->whereNumber('id');
+    });
 });
 
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
