@@ -15,7 +15,7 @@
         @foreach($posts as $post)
         <tr>
             <th scope="row">{{$post->id}}</th>
-            <td>{{$post->title}}</td>
+            <td><a href="{{route('post.single', ['id' => $post->id])}}">{{$post->title}}</a></td>
             <td>{{$post->created_at}}</td>
         </tr>
         @endforeach

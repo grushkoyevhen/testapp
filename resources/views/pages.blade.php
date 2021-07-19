@@ -17,9 +17,9 @@
                 @if(is_array($element))
                     @foreach($element as $page=>$url)
                         @if($paginator->currentPage() == $page)
-                            <li class="page-item active"><a class="page-link" href="{{ route('post.list.page', ['id' => $page]) }}">{{ $page }}</a></li>
+                            <li class="page-item active"><a class="page-link" href="{{ route('post.page', ['id' => $page]) }}">{{ $page }}</a></li>
                         @else
-                            <li class="page-item"><a class="page-link" href="{{ route('post.list.page', ['id' => $page]) }}">{{ $page }}</a></li>
+                            <li class="page-item"><a class="page-link" href="{{ route('post.page', ['id' => $page]) }}">{{ $page }}</a></li>
                         @endif
                     @endforeach
                 @endif
