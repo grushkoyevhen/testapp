@@ -45,6 +45,10 @@ class User extends Authenticatable
         return $this->hasMany(Post::class, 'user_id', 'id');
     }
 
+    public function comments() {
+        return $this->hasMany(Comment::class, 'user_id', 'id');
+    }
+
     public function scopeVerified($query) {
         $query->whereNull('email_verified_at');
     }

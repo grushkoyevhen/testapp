@@ -10,8 +10,19 @@ class Post extends Model
     use HasFactory;
 
     protected $table = 'posts';
+    protected $primaryKey = 'id';
+    protected $connection = 'mysql';
+
+    protected $fillable = [
+        'title',
+        'body',
+    ];
 
     public function user() {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function comments() {
+        return $this->hasMany(Comment::class, 'post_id', 'id');
     }
 }

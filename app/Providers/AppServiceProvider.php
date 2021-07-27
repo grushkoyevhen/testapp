@@ -5,6 +5,11 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Queue\Events\JobProcessed;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,10 +30,29 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if($this->app->runningInConsole()) {
-            DB::listen(function ($query) {
-                Log::debug($query->sql, ['data' => $query->bindings]);
-            });
-        }
+        DB::listen(function ($query) {
+            Log::channel('sql')->info($query->sql, ['data' => $query->bindings]);
+        });
+
+        Queue::before(function (JobProcessing  $event) {
+            if(property_exists($event->job, 'chain_id')) {
+                $name = $event->job->payload()['displayName'];
+                Log::channel('chains')->info(sprintf("%s %s start", $event->job->chain_id, $name));
+            }
+        });
+
+        Queue::after(function (JobProcessed $event) {
+            if(property_exists($event->job, 'chain_id')) {
+                $name = $event->job->payload()['displayName'];
+                Log::channel('chains')->info(sprintf("%s %s success", $event->job->chain_id, $name));
+            }
+        });
+
+        Queue::failing(function (JobFailed $event) {
+            if(property_exists($event->job, 'chain_id')) {
+                $name = $event->job->payload()['displayName'];
+                Log::channel('chains')->info(sprintf("%s %s failed: %s",  $event->job->chain_id, $name, $event->exception->getMessage()));
+            }
+        });
     }
 }

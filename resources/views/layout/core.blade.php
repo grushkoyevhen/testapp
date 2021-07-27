@@ -62,7 +62,7 @@
                                 <a class="nav-link {{ Route::is('post.add', 'post.add_failed') ? 'active' : '' }}" aria-current="page" href="{{ route('post.add', [], false) }}">Добавить пост</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ (Route::is('post.list', 'post.page', 'post.show')) ? 'active' : '' }}" aria-current="page" href="{{ route('post.list', [], false) }}">Посты</a>
+                                <a class="nav-link {{ (Route::is('post.index', 'post.page', 'post.single', 'post.addcomment_failed')) ? 'active' : '' }}" aria-current="page" href="{{ route('post.index', [], false) }}">Посты</a>
                             </li>
                             @endauth
                         </ul>

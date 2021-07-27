@@ -17,7 +17,7 @@ class AddPost implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $uuid;
+    public $chain_id;
     public $user;
     public $title;
     public $text;
@@ -31,9 +31,9 @@ class AddPost implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($uuid, User $user, $title, $text)
+    public function __construct($chain_id, User $user, $title, $text)
     {
-        $this->uuid = $uuid;
+        $this->chain_id = $chain_id;
         $this->user = $user;
         $this->title = $title;
         $this->text = $text;
@@ -48,20 +48,17 @@ class AddPost implements ShouldQueue
      */
     public function handle()
     {
+        $this->job->chain_id = $this->chain_id;
+
         $post = new Post;
-        $post->title = $this->title;
-        $post->body = $this->text;
+        $post->fill([
+            'title' => $this->title,
+            'body' => $this->text
+        ]);
         $post->user()->associate($this->user);
         $post->save();
 
-        Cache::store('file')->put('addpost_post_' . $this->uuid, serialize($post));
-        Cache::store('file')->put('addpost_user_' . $this->uuid, serialize($this->user));
-
-        Log::channel('chains')->info(sprintf("%s %s sucess", $this->uuid, get_class($this)));
-    }
-
-    public function failed($exception)
-    {
-        Log::channel('chains')->info(sprintf("%s %s failed: %s", $this->uuid, get_class($this), $exception->getMessage()));
+        Cache::store('file')->put('post_' . $this->chain_id, serialize($post));
+        Cache::store('file')->put('user_' . $this->chain_id, serialize($this->user));
     }
 }

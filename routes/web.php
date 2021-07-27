@@ -5,6 +5,7 @@ use App\Http\Controllers\RegController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\AddPostController;
 
 Route::redirect('/', '/auth', 301);
 
@@ -17,11 +18,16 @@ Route::middleware('guest')->group(function() {
 
 Route::middleware('auth')->group(function() {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-    Route::get('addpost', [PostController::class, 'showAdd'])->name('post.add');
-    Route::post('addpost', [PostController::class, 'add'])->name('post.add_failed');
-    Route::get('post/{id}', [PostController::class, 'showPost'])->name('post.show')->whereNumber('id');
-    Route::get('posts', [PostController::class, 'showList'])->name('post.list');
-    Route::get('posts/page/{id}', [PostController::class, 'showList'])->name('post.page')->whereNumber('id');
+
+    Route::get('addpost', [AddPostController::class, 'showAdd'])->name('post.add');
+    Route::post('addpost', [AddPostController::class, 'doAdd'])->name('post.add_failed');
+
+    Route::prefix('posts')->name('post')->group(function() {
+        Route::get('/', [PostController::class, 'showList'])->name('.index');
+        Route::get('page/{id}', [PostController::class, 'showList'])->name('.page')->whereNumber('id');
+        Route::get('single/{id}', [PostController::class, 'showPost'])->name('.single')->whereNumber('id');
+        Route::post('single/{id}', [PostController::class, 'addComment'])->name('.addcomment_failed')->whereNumber('id');
+    });
 });
 
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
