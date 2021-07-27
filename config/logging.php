@@ -47,6 +47,12 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 
+        'sql' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/sql.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
         'chains' => [
             'driver' => 'single',
             'path' => storage_path('logs/chains.log'),

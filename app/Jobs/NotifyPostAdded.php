@@ -14,11 +14,11 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class PostAddedNotify implements ShouldQueue
+class NotifyPostAdded implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $uuid;
+    public $chain_id;
 
     public $tries = 5;
     public $backoff = 5; // если Job выбрасывает исключение, то оно ловится и выполняется $this->release($backoff);
@@ -32,9 +32,9 @@ class PostAddedNotify implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($uuid)
+    public function __construct($chain_id)
     {
-        $this->uuid = $uuid;
+        $this->chain_id = $chain_id;
 
         $this->onConnection('database')->onQueue('default');
     }
@@ -46,17 +46,16 @@ class PostAddedNotify implements ShouldQueue
      */
     public function handle()
     {
-        $post = unserialize(Cache::store('file')->get('addpost_post_' . $this->uuid));
-        $user = unserialize(Cache::store('file')->get('addpost_user_' . $this->uuid));
+        $this->job->chain_id = $this->chain_id;
+
+        $post = unserialize(Cache::store('file')->get('post_' . $this->chain_id));
+        $user = unserialize(Cache::store('file')->get('user_' . $this->chain_id));
 
         $user->notify(new PostAdded($post));
-
-        Log::channel('chains')->info(sprintf("%s %s sucess", $this->uuid, get_class($this)));
     }
 
     public function failed($exception)
     {
-        Log::channel('chains')->info(sprintf("%s %s failed: %s", $this->uuid, get_class($this), $exception->getMessage()));
     }
 
     public function middleware() {

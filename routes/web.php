@@ -19,13 +19,14 @@ Route::middleware('guest')->group(function() {
 Route::middleware('auth')->group(function() {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
-    Route::get('addpost', [AddPostController::class, 'show'])->name('post.add');
-    Route::post('addpost', [AddPostController::class, 'add'])->name('post.add_failed');
+    Route::get('addpost', [AddPostController::class, 'showAdd'])->name('post.add');
+    Route::post('addpost', [AddPostController::class, 'doAdd'])->name('post.add_failed');
 
     Route::prefix('posts')->name('post')->group(function() {
         Route::get('/', [PostController::class, 'showList'])->name('.index');
-        Route::get('single/{id}', [PostController::class, 'showPost'])->name('.single')->whereNumber('id');
         Route::get('page/{id}', [PostController::class, 'showList'])->name('.page')->whereNumber('id');
+        Route::get('single/{id}', [PostController::class, 'showPost'])->name('.single')->whereNumber('id');
+        Route::post('single/{id}', [PostController::class, 'addComment'])->name('.addcomment_failed')->whereNumber('id');
     });
 });
 

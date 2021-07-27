@@ -17,15 +17,15 @@
                 @if(is_array($element))
                     @foreach($element as $page=>$url)
                         @if($paginator->currentPage() == $page)
-                            <li class="page-item active"><a class="page-link" href="{{ route('post.page', ['id' => $page]) }}">{{ $page }}</a></li>
+                            <li class="page-item active"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
                         @else
-                            <li class="page-item"><a class="page-link" href="{{ route('post.page', ['id' => $page]) }}">{{ $page }}</a></li>
+                            <li class="page-item"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
                         @endif
                     @endforeach
                 @endif
             @endforeach
 
-            @if(!$paginator->onFirstPage())
+            @if($paginator->hasMorePages())
                 <li class="page-item">
                     <a class="page-link" href="{{ $paginator->nextPageUrl() }}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>

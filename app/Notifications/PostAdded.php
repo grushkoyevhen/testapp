@@ -33,13 +33,6 @@ class PostAdded extends Notification
         return ['database'];
     }
 
-    public function toArray($notifiable)
-    {
-        return [
-
-        ];
-    }
-
     public function toDatabase($notifiable)
     {
         return [

@@ -22,5 +22,5 @@
         </tbody>
     </table>
 
-    {{$paginator->onEachSide(5)->links('pages')}}
+    {{$paginator->onEachSide(3)->links('pages')}}
 @stop
