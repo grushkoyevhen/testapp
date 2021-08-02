@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\PostNotFound;
 use App\Jobs\AddComment;
 use App\Jobs\NotifyPostCommentators;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Models\Post;
-use App\Models\Comment;
 use App\Pagination\Paginator;
 use Illuminate\Support\Str;
 
@@ -18,7 +17,9 @@ class PostController extends Controller
 {
     public function showPost(Request $request, $id)
     {
-        $post = Post::findOrFail($id);
+        if(!($post = Post::find($id))) {
+            throw new PostNotFound;
+        }
 
         $pageName = 'p';
         $perPage = $post->getPerPage();
@@ -67,11 +68,13 @@ class PostController extends Controller
 
     public function addComment(Request $request, $id)
     {
+        if(!($post = Post::find($id))) {
+            throw new PostNotFound;
+        }
+
         $validator = Validator::make($request->all(), [
             'text' => 'required|min:10|max:1000',
         ]);
-
-        $post = Post::findOrFail($id);
 
         if($validator->fails())
             return redirect()

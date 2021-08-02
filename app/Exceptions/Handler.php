@@ -34,10 +34,14 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->map(function(PostNotFound $e) {
+            return new SectionNotFound($e->getMessage(), $e->getCode(), $e);
         });
 
-        $this->map();
+        $this->renderable(function(SectionNotFound $e) {
+            return response()
+                ->view('notfound', ['exception' => $e], 404)
+                ->withException($e);
+        });
     }
 }
