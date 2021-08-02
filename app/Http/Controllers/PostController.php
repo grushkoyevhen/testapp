@@ -43,19 +43,15 @@ class PostController extends Controller
 
     public function showList($page = 1)
     {
-        $posts = null;
-        $posts_count = null;
-
         $perPage = (new Post)->getPerPage();
 
-        DB::transaction(function() use (&$posts, &$posts_count, $page, $perPage) {
-            $posts = Post::withCount('comments')
-                ->orderByDesc('created_at')
-                ->limit($perPage)
-                ->offset(($page-1)*$perPage)
-                ->get();
-            $posts_count = Post::count();
-        }, 3);
+        $posts = Post::withCount('comments as comments_num')
+            ->orderByDesc('created_at')
+            ->limit($perPage)
+            ->offset(($page-1)*$perPage)
+            ->get();
+
+        $posts_count = Post::count();
 
         $paginator = new Paginator($posts, $posts_count, $perPage, $page, [
             'urlResolver' => function($page) {

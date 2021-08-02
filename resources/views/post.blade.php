@@ -35,7 +35,7 @@
         @endif
         <div class="row">
             <div class="col">
-                @if($errors->addComment->any())
+                @if($errors->addComment->count())
                     <div class="alert alert-danger" role="alert">
                         <ul>
                             @foreach($errors->addComment->all() as $error)

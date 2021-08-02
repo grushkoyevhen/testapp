@@ -24,7 +24,9 @@ class AddPostController extends Controller
         $user = $request->user();
 
         if($validator->fails()) {
-            return view('addpost')->withErrors($validator->errors(), 'kappa');
+            return redirect()
+                ->route('post.add')
+                ->withErrors($validator->errors(), 'kappa');
         }
 
         $chain_id = (string)Str::uuid();
