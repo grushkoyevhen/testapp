@@ -6,6 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Queue\Events\JobProcessed;
@@ -30,6 +32,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        View::composer('*', function ($view) {
+            if(!Auth::guest())
+                $view->with('user', Auth::user());
+        });
+
         DB::listen(function ($query) {
             Log::channel('sql')->info($query->sql, ['data' => $query->bindings]);
         });
