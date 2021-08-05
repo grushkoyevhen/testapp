@@ -20,10 +20,21 @@
             <div class="col">
                 @foreach($post->comments as $comment)
                     <div class="shadow-sm p-3 mb-3 bg-body rounded">
-                        <div class="row">
-                            <div class="col-2">
-                                {{$comment->user->name}}
+                        <div class="d-flex mb-3 align-items-center justify-content-start">
+                            <div class="pe-3">
+                                <b>{{$comment->user->name}}</b>
                             </div>
+                            <div class="pe-3">
+                                {{$comment->created_at}}
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="btn-group btn-group-sm float-end">
+                                    <a href="#" class="btn btn-primary"><i class="bi-pencil-square"></i></a>
+                                    <a href="#" class="btn btn-primary"><i class="bi-x-lg"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col">
                                 {{$comment->text}}
                             </div>
