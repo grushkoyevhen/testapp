@@ -68,7 +68,7 @@ class PostController extends Controller
             throw new PostNotFound;
         }
 
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->post(), [
             'text' => 'required|min:10|max:1000',
         ]);
 
