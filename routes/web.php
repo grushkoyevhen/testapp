@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RegController;
+use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostController;
@@ -10,8 +10,8 @@ use App\Http\Controllers\AddPostController;
 Route::redirect('/', '/auth', 301);
 
 Route::middleware('guest')->group(function() {
-    Route::get('reg', [RegController::class, 'index'])->name('reg.index');
-    Route::post('reg', [RegController::class, 'create']);
+    Route::get('reg', [RegistrationController::class, 'index'])->name('reg.index');
+    Route::post('reg', [RegistrationController::class, 'create']);
     Route::get('auth', [AuthController::class, 'index'])->name('auth.index');
     Route::post('auth', [AuthController::class, 'authenticate']);
 });

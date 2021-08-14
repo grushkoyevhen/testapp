@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Casts\Hash;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
+
+    protected $table = 'users';
+    protected $primaryKey = 'id';
+    protected $connection = 'mysql';
 
     /**
      * The attributes that are mass assignable.
@@ -39,18 +43,21 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => Hash::class,
     ];
 
-    public function posts() {
+    public function posts()
+    {
         return $this->hasMany(Post::class, 'user_id', 'id');
     }
 
-    public function comments() {
+    public function comments()
+    {
         return $this->hasMany(Comment::class, 'user_id', 'id');
     }
 
-    public function scopeVerified($query) {
-        $query->whereNull('email_verified_at');
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = strtolower($value);
     }
-
 }
